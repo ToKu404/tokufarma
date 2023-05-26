@@ -8,7 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -73,6 +76,50 @@ public class MainScene {
 
     private void showTableView() {
         rightSide.getChildren().clear();
+
+        // observable list
+        ObservableList<Obat> listObat = FXCollections.observableArrayList();
+        listObat.add(new Obat("Paracetamol", "21-02-2023", 3));
+        listObat.add(new Obat("Bodrex", "21-02-2023", 2));
+        listObat.add(new Obat("ProMaag", "21-02-2023", 1));
+
+        // membuat Tabel View
+        TableView<Obat> tableObat = new TableView<>();
+
+        // table column
+        TableColumn<Obat, String> column1 = new TableColumn<>("name");
+        TableColumn<Obat, String> column2 = new TableColumn<>("expiredDate");
+        TableColumn<Obat, Integer> column3 = new TableColumn<>("stok");
+
+        // pasangkan
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("stok"));
+
+        // tambah column ke tabel
+        tableObat.getColumns().addAll(column1, column2, column3);
+
+        // kasih nilai
+        tableObat.setItems(listObat);
+
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfExpiredDate.setPromptText("Tanggal Kadaluarsa");
+        TextField tfStock = new TextField();
+        tfStock.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction(v -> {
+            listObat.add(new Obat(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+        });
+
+        // Tampilkan di VBOX
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
+        // tampilkan ke vbox
+        rightSide.getChildren().add(tableObat);
     }
 
     private void changeMenu(int indexMenu) {
