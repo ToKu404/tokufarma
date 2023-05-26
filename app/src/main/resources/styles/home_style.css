@@ -1,0 +1,26 @@
+.title-text-left {
+	-fx-fill: "#79E0EE";
+	-fx-font-size: 33px;
+	-fx-font-weight: bold;
+}
+
+.title-text-right {
+	-fx-fill: "#FFFFFF";
+	-fx-font-size: 33px;
+	-fx-font-weight: bold;
+}
+
+.desc-text {
+	-fx-text-fill: "#FFFFFF";
+	-fx-font-size: 14px;
+}
+
+.btn-explore {
+	-fx-background-color: "#FBFFDC";
+	-fx-text-fill: "#323232";
+	-fx-font-size: 15px;
+	-fx-font-weight: bold;
+	-fx-min-width: 171px;
+	-fx-min-height: 38px;
+	-fx-background-radius: 42px;
+}

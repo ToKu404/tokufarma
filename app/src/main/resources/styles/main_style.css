@@ -1,0 +1,25 @@
+.vbox-menu {
+	-fx-background-color: "#222222";
+}
+
+.title-text-left {
+	-fx-fill: "#79E0EE";
+	-fx-font-size: 20px;
+	-fx-font-weight: bold;
+}
+
+.title-text-right {
+	-fx-fill: "#FFFFFF";
+	-fx-font-size: 20px;
+	-fx-font-weight: bold;
+}
+
+.label-menu {
+	-fx-text-fill: "#FFFFFF";
+	-fx-font-size: 15px;
+  
+}
+
+.menu-active {
+	-fx-background-color: "#79E0EE";
+}
