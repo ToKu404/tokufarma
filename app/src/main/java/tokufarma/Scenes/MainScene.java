@@ -1,11 +1,18 @@
 package tokufarma.Scenes;
 
+import java.sql.SQLException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -14,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import tokufarma.dao.ObatDao;
 
 public class MainScene {
     private Stage stage;
@@ -42,6 +50,7 @@ public class MainScene {
 
         //observable list
         ObservableList<String> listPharmas = FXCollections.observableArrayList();
+
         listPharmas.addAll("luna", "Mezaluna", "meluna", "zhafira");
 
         //MENAMPILKAN LIS APOTEKER
@@ -49,13 +58,82 @@ public class MainScene {
         //pasangkan
         listViewPharmas.setItems(listPharmas);
 
+        TextField tfName = new TextField(null);
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Delete");
+
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tfName.getText());
+        });
+
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
+        });
+
         //TAMBAHKAN LISTVIEW KE VBOX
-        rightSide.getChildren().add(listViewPharmas);
+        rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
 
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+
+        ObatDao obatDao = new ObatDao();
+        try {           
+            listObat.addAll(obatDao.getAll());
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        listObat.add(new ObatModel("Paracetamol", "21-2-2023", 3));
+        listObat.add(new ObatModel("Kombantrin", "22-2-2023", 1));
+        listObat.add(new ObatModel("Ibuprofen", "24-2-2023", 1));
+
+        //membuat tabel view
+        TableView<ObatModel> tableObat = new TableView<>();
+        
+        //Tabel column
+        TableColumn<ObatModel, String> column1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> column2 = new TableColumn<>("Expired date");
+        TableColumn<ObatModel, Integer> column3 = new TableColumn<>("Stok");
+
+        //pasangkan
+        column1.setCellValueFactory(new  PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new  PropertyValueFactory<>("expiredDate"));
+        column3.setCellValueFactory(new  PropertyValueFactory<>("stock"));
+
+        column1.setPrefWidth((rightSide.getWidth() - 60) / 3);
+        column2.setPrefWidth((rightSide.getWidth() - 60) / 3 + 10);
+        column3.setPrefWidth((rightSide.getWidth() - 60) / 3);
+
+        //tambah colum ke table
+        tableObat.getColumns().addAll(column1, column2, column3);
+
+        //kasi nilai
+        tableObat.setItems(listObat);
+
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfExpiredDate.setPromptText("Tanggal Kadaluarsa");
+        TextField tfStock = new TextField();
+        tfStock.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction(v -> {
+            listObat.add(new ObatModel(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+            obatDao.syncData(listObat);
+        });
+
+        // Tampilkan di VBOX
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
+        //TMPILKAN DI VBOX
+        rightSide.getChildren().add(tableObat);
     }
 
     private void changeMenu(int indexMenu) {
