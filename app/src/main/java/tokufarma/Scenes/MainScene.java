@@ -1,5 +1,7 @@
 package tokufarma.Scenes;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -37,6 +39,15 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
+
+        ObservableList<String> listPharmas = FXCollections.observableList();
+        listPharmas.addAll("Kelvin", "Jonathan", "Henokh", "Nabil");
+
+        ListView listViewPharmas = new ListView();
+        listViewPharmas.setItems(listPharmas);
+
+        rightSide.getChildren().add(listViewPharmas);
+
     }
 
     private void showTableView() {
