@@ -5,8 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -51,8 +53,21 @@ public class MainScene {
         //Pasangkan
         listViewPharmas.setItems(listPharmas);
 
+        TextField tName = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Delete");
+
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tName.getText());
+        });
+
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
+        });
+
         //tambah listview ke Vbox
-        rightSide.getChildren().add(listViewPharmas);
+        rightSide.getChildren().addAll(listViewPharmas, tName, btnAdd, btnRemove);
     }
 
     private void showTableView() {
