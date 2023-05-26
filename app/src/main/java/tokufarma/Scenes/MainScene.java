@@ -1,5 +1,8 @@
 package tokufarma.Scenes;
 
+
+import java.sql.SQLException;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -7,7 +10,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -16,6 +22,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import tokufarma.dao.ObatDao;
+import tokufarma.models.Obat;
 
 public class MainScene {
     private Stage stage;
@@ -71,6 +79,57 @@ public class MainScene {
 
     private void showTableView() {
         rightSide.getChildren().clear();
+        //buat observable list
+        ObservableList<Obat> listObat = FXCollections.observableArrayList();
+        
+        // ambil data dari database
+        ObatDao obatDao = new ObatDao();
+        try {
+            listObat.addAll(obatDao.getAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //membuat tabel view
+        TableView<Obat> tableObat = new TableView<>();
+
+        // Tabel Column
+        TableColumn<Obat, String> column1 = new TableColumn<>("Nama");
+        TableColumn<Obat, String> column2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<Obat, Integer> column3 = new TableColumn<>("Stock");
+
+        // Pasangkan 
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        column1.setPrefWidth((rightSide.getWidth() - 60) / 3);
+        column2.setPrefWidth((rightSide.getWidth() - 60) / 3 + 10);
+        column3.setPrefWidth((rightSide.getWidth() - 60) / 3);
+
+        // tambah kolom ke tabel
+        tableObat.getColumns().addAll(column1, column2, column3);
+
+        // Beri nilai
+        tableObat.setItems(listObat);
+        
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfName.setPromptText("Tanggal kadaluarsa");
+        TextField tfStock = new TextField();
+        tfName.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction( v -> {
+            listObat.add(new Obat(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+            obatDao.syncData(listObat);
+        });
+        
+        // Tampilkan di Vbox
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
     }
 
     private void changeMenu(int indexMenu) {
