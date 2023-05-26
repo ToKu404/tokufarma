@@ -1,7 +1,5 @@
 package tokufarma.Scenes;
 
-import java.util.Observable;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -9,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -44,37 +45,87 @@ public class MainScene {
     private void showListView() {
         rightSide.getChildren().clear();
 
-        //observable list
+        // observable list
         ObservableList<String> listPharmas = FXCollections.observableArrayList();
         listPharmas.addAll("DIN", "EL", "AYU", "ELVA", "CHA");
 
-        //tampilkan list apoteker
-        ListView listViewPharmas = new ListView<>();
+        // tampilkan list apoteker
+        ListView<String> listViewPharmas = new ListView<>();
 
-        //pasangkan
+        // pasangkan
         listViewPharmas.setItems(listPharmas);
 
         TextField tfName = new TextField();
         Button btnAdd = new Button("Tambah");
         Button btnRemove = new Button("Hapus");
 
-        //tambah
+        // tambah
         btnAdd.setOnAction(v -> {
             listPharmas.add(tfName.getText());
         });
 
-        //hapus
+        // hapus
         btnAdd.setOnAction(v -> {
             int index = listViewPharmas.getSelectionModel().getSelectedIndex();
             listPharmas.remove(index);
         });
 
-        //tambah listview
+        // tambah listview
         rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
+
+        // observasi list menampung
+        ObservableList<Obat> listObat = FXCollections.observableArrayList();
+        listObat.add(new Obat("Paracetamol", "12 juni 2024", 9));
+        listObat.add(new Obat("Amoxilin", "18 agustus 2025", 100));
+        listObat.add(new Obat("ProMaag", "6 juni 2023", 50));
+
+        try {
+            ObatDao obatDao = new ObatDao();
+            listObat.addAll(obatDao.getAll());
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        // Menampilkan tabel Obat
+        TableView<Obat> tabelObat = new TableView<>();
+
+        TableColumn<Obat, String> colom1 = new TableColumn<>("name");
+        TableColumn<Obat, String> colom2 = new TableColumn<>("expiredDate");
+        TableColumn<Obat, Integer> colom3 = new TableColumn<>("stok");
+
+        colom1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colom2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        colom3.setCellValueFactory(new PropertyValueFactory<>("stok"));
+
+        // tambah kolom ke table
+        tabelObat.getColumns().addAll(colom1, colom2, colom3);
+
+        // beri nilai
+        tabelObat.setItems(listObat);
+        
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfExpiredDate.setPromptText("Tanggal Kadaluarsa");
+        TextField tfStock = new TextField();
+        tfStock.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction(v -> {
+            listObat.add(new ObatModel(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+        });
+
+        // Tampilkan di VBOX
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
+        // tambahkan ke vbox
+        rightSide.getChildren().add(tabelObat);
     }
 
     private void changeMenu(int indexMenu) {
