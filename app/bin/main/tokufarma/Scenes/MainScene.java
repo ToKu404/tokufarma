@@ -44,10 +44,14 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
-        
+
+        //Observasi list
         ObservableList <String> listPharmas = FXCollections.observableArrayList();
-        listPharmas.addAll("John Doe", "John Wick", "Abdul Mansur", "Masloman", "Enoch");
+        listPharmas.addAll("John Doe" , "John Wick" , "Abdul Mansur" , "Mas Loman" , "Enouch");
+
+        //menampilkan list apoteker
         ListView listViewPharmas = new ListView<>();
+        //pasangkan
         listViewPharmas.setItems(listPharmas);
 
         TextField tfName = new TextField();
@@ -63,28 +67,30 @@ public class MainScene {
             listPharmas.remove(index);
         });
 
-        rightSide.getChildren().addAll(listViewPharmas, btAdd, btRemove);
+        //tambah listview ke vbox
+        rightSide.getChildren().addAll(listViewPharmas,btAdd,btRemove);
     }
+
 
     private void showTableView() {
         rightSide.getChildren().clear();
 
-        ObservableList <ObatModel> listObat = FXCollections.observableArrayList();
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+       
         listObat.add(new ObatModel("Paracetamol", "22-03-2024", 5));
-        listObat.add(new ObatModel("Asam Mefenafat", "01-05-2024", 10));
-        listObat.add(new ObatModel("Endorfin", "09-03-2025", 1));
-        
-        // membuat tabel view
+        listObat.add(new ObatModel("Asam Menfenamat", "22-03-2025", 10));
+        listObat.add(new ObatModel("Endorfin", "22-03-2026", 15));
+
+        //membuat tabel view
         TableView <ObatModel> tableObat = new TableView<>();
-        // table column
         TableColumn <ObatModel, String> column1 = new TableColumn<>("Nama");
-        TableColumn <ObatModel, String> column2 = new TableColumn<>("Tanggal Kadaluarsa"); 
-        TableColumn <ObatModel, Integer> column3 = new TableColumn<>("Stok");  
-        // pasangkan
-        column1.setCellValueFactory(new PropertyValueFactory<>("nama"));
-        column2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        TableColumn <ObatModel, String> column2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn <ObatModel, String> column3 = new TableColumn<>("Stock");
+        //pasangkan
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("expireDate"));
         column3.setCellValueFactory(new PropertyValueFactory<>("stock"));
-        //tambah column
+        //tambah coloumn
         tableObat.getColumns().addAll(column1,column2,column3);
         tableObat.setItems(listObat);
         rightSide.getChildren().addAll(tableObat);
