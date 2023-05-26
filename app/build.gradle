@@ -8,11 +8,13 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.1'
 }
+
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(20)
     }
 }
 
