@@ -1,5 +1,6 @@
 package tokufarma.Scenes;
 
+import java.sql.SQLException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,7 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -17,6 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import tokufarma.dao.ObatDao;
+import tokufarma.models.ObatModel;
 
 public class MainScene {
     private Stage stage;
@@ -43,11 +49,12 @@ public class MainScene {
     private void showListView() {
         rightSide.getChildren().clear();
 
-        //Observable List (memperbarui tampilan saat melakukan perubahan)
+        // Observable List (memperbarui tampilan saat melakukan perubahan)
         ObservableList<String> listPharmas = FXCollections.observableArrayList();
-        listPharmas.addAll("Alexander fudhayl", "Luis Van Der Joy", "Leonardo Bonaparte", "Abdul Kadir", "Ryuu De La Croix");
+        listPharmas.addAll("Alexander fudhayl", "Luis Van Der Joy", "Leonardo Bonaparte", "Abdul Kadir",
+                "Ryuu De La Croix");
 
-        //Menampilkan list apoteker
+        // Menampilkan list apoteker
         ListView<String> listViewPharmas = new ListView<>();
         listViewPharmas.setItems(listPharmas);
 
@@ -64,13 +71,64 @@ public class MainScene {
             listPharmas.remove(index);
         });
 
-        //Tambah listView ke vbox
+        // Tambah listView ke vbox
         rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
-        
+
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
+        // observable list
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+
+        // ambil data dari database
+        ObatDao obatDao = new ObatDao();
+        try {
+            listObat.addAll(obatDao.getAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Membuat Tabel View
+        TableView<ObatModel> tableObat = new TableView<>();
+
+        // MembuAT Table Coloumn
+        TableColumn<ObatModel, String> coloumn1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> coloumn2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<ObatModel, Integer> coloumn3 = new TableColumn<>("Stok");
+
+        // Pasangkan
+        coloumn1.setCellValueFactory(new PropertyValueFactory<>("nama"));
+        coloumn2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        coloumn3.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        coloumn1.setPrefWidth((rightSide.getWidth() - 60) / 3);
+        coloumn2.setPrefWidth((rightSide.getWidth() - 60) / 3 + 10);
+        coloumn3.setPrefWidth((rightSide.getWidth() - 60) / 3);
+
+        // tambah colum ke table
+        tableObat.getColumns().addAll(coloumn1, coloumn2, coloumn3);
+
+        // Kasi nilai
+        tableObat.setItems(listObat);
+
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfExpiredDate.setPromptText("Tanggal Kadaluarsa");
+        TextField tfStock = new TextField();
+        tfStock.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction(v -> {
+            listObat.add(new ObatModel(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+            obatDao.syncData(listObat);
+        });
+
+        // Tampilkan di VBOX
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
     }
 
     private void changeMenu(int indexMenu) {
