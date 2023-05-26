@@ -5,8 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -43,15 +45,29 @@ public class MainScene {
 
         //observable list
         ObservableList<String> listPharmas = FXCollections.observableArrayList();
-        listPharmas.addAll("dew", "marchely" , "kefira", "anaya", "farah");
+        listPharmas.addAll("dewina", "marchely" , "kefira", "anaya", "farah");
 
         // tampilkan list apoteker
         ListView <String> listViewPharmas = new ListView<>(null);
         //pasangkan
         listViewPharmas.setItems(listPharmas);
 
+        TextField tfName = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Delete");
+
+
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tfName.getText());
+                });
+
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
+        });
+
          //tambah list view di vbox
-        rightSide.getChildren().add(listViewPharmas);
+        rightSide.getChildren().addAll(listViewPharmas, btnAdd, btnRemove);
 
         
 
@@ -59,6 +75,8 @@ public class MainScene {
 
     private void showTableView() {
         rightSide.getChildren().clear();
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+        
     }
 
     private void changeMenu(int indexMenu) {
