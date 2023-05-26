@@ -1,5 +1,9 @@
 package tokufarma.Scenes;
 
+import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -37,6 +41,18 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
+
+        //observable list
+        ObservableList<String> listPharmas = FXCollections.observableArrayList();
+        listPharmas.addAll("Tom Hanks", "G-Dragon", "Uzumaki Naruto", "Xin Jinping");
+
+        //menampilkan list apoteker
+        ListView<String> listViewPharmas = new ListView<>();
+        //pasangkan
+        listViewPharmas.setItems(listPharmas);
+
+        //tambah listview ke vbox
+        rightSide.getChildren().add(listViewPharmas);
     }
 
     private void showTableView() {
