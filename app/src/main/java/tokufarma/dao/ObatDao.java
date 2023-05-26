@@ -27,7 +27,7 @@ public class ObatDao {
                 String sql = "CREATE TABLE obats " +
                         "(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         " name TEXT NOT NULL, " +
-                        " expiredData TEXT NOT NULL, " +
+                        " expiredDate TEXT NOT NULL, " +
                         " stock INTEGER NOT NULL)";
                 stmt.executeUpdate(sql);
             }

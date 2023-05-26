@@ -120,7 +120,6 @@ public class MainScene {
 
         // Tampilkan di VBOX
         rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
-        rightSide.getChildren().addAll(tableObat);
 
     }
 
