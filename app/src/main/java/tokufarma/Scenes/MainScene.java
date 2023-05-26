@@ -5,8 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -40,10 +42,6 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
-    }
-
-    private void showTableView() {
-        rightSide.getChildren().clear();
         
         //observasi list menampung
         ObservableList<String> listPharmacist = FXCollections.observableArrayList();
@@ -54,8 +52,38 @@ public class MainScene {
         //pasangkan 
         listViewPharmacist.setItems(listPharmacist);
 
+        TextField tfName = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Hapus");
+
+        btnAdd.setOnAction(v -> {
+            listPharmacist.add(tfName.getText());
+        });
+    
+        btnAdd.setOnAction(v -> {
+            int index = listViewPharmacist.getSelectionModel().getSelectedIndex();
+            listPharmacist.remove(index);
+        });
+
+
         //tambah list view vbox
-        rightSide.getChildren().add(listViewPharmacist);
+        rightSide.getChildren().addAll(listViewPharmacist, tfName, btnAdd, btnRemove);
+    }
+
+    private void showTableView() {
+        rightSide.getChildren().clear();
+        
+        // //observasi list menampung
+        // ObservableList<String> listPharmacist = FXCollections.observableArrayList();
+        // listPharmacist.addAll("armin", "chigiri", "akaashi", "nanami");
+
+        // //Menampilkan List Apoteker
+        // ListView<String> listViewPharmacist = new ListView<>();
+        // //pasangkan 
+        // listViewPharmacist.setItems(listPharmacist);
+
+        // //tambah list view vbox
+        // rightSide.getChildren().add(listViewPharmacist);
     }
 
     private void changeMenu(int indexMenu) {
