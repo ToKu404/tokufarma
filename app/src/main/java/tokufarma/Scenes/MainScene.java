@@ -4,8 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -41,18 +43,34 @@ public class MainScene {
         rightSide.getChildren().clear();
         //Observable list
         ObservableList <String> listPharmas = FXCollections.observableArrayList();
-
         listPharmas.addAll("Apple");
 
+        //
         ListView listViewPharmas = new ListView<>();
         listViewPharmas.setItems(listPharmas);
         
-        listViewPharmas.setOnMouseClicked(v -> {
-            String selectedItems = listViewPharmas.getSelectionModel().getSelectedItem().toString();
-            System.out.println(selectedItems);
+        
+        TextField tfName = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Hapus");
+
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tfName.getText());
         });
 
-        rightSide.getChildren().add(listViewPharmas);
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
+        });
+
+        //tambahkan list di vbox
+        rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
+
+        // listViewPharmas.setOnMouseClicked(v -> {
+        //     String selectedItems = listViewPharmas.getSelectionModel().getSelectedItem().toString();
+        //     System.out.println(selectedItems);
+        // });
+
     }
 
     private void showTableView() {
