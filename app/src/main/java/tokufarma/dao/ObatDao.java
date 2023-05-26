@@ -1,22 +1,22 @@
 package tokufarma.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import tokufarma.models.ObatModel;
-import tokufarma.utils.DatabaseConfig;
+import tokufarma.utils.DataBaseConfig;
 
 public class ObatDao {
     private Connection conn;
     private Statement stmt;
 
     public ObatDao() {
-        conn = DatabaseConfig.getConnection();
+        conn = DataBaseConfig.getConnection();
         setupTable();
     }
 
@@ -64,7 +64,7 @@ public class ObatDao {
                         INSERT INTO obats(name, expiredDate, stock)
                         VALUES('%s', '%s', '%d');
                         """,
-                        obat.getName(),
+                        obat.getNama(),
                         obat.getExpiredDate(),
                         obat.getStock());
                 stmt.executeUpdate(sql);

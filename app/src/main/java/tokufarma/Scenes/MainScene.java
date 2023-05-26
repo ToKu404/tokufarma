@@ -1,9 +1,18 @@
 package tokufarma.Scenes;
 
+import java.sql.SQLException;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -12,7 +21,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javax.swing.text.html.ListView;
+import tokufarma.dao.ObatDao;
+import tokufarma.models.ObatModel;
 
 public class MainScene {
     private Stage stage;
@@ -39,58 +49,67 @@ public class MainScene {
     private void showListView() {
         rightSide.getChildren().clear();
 
-        // obsetvable list
-        ObservableList<String> listPharmas = FXCollection.observableArrayList();
-        listPharmas.addAll("iswari", "ronaldo", "dybala");
-        ListView<String> listViewPharmas = new ListView<>();
+        // Observable List (memperbarui tampilan saat melakukan perubahan)
+        ObservableList<String> listPharmas = FXCollections.observableArrayList();
+        listPharmas.addAll("Alexander fudhayl", "Luis Van Der Joy", "Leonardo Bonaparte", "Abdul Kadir",
+                "Ryuu De La Croix");
 
+        // Menampilkan list apoteker
+        ListView<String> listViewPharmas = new ListView<>();
         listViewPharmas.setItems(listPharmas);
 
         TextField tfName = new TextField();
         Button btnAdd = new Button("Tambah");
-        Button btnRemove = new Button("Delete");
+        Button btnRemove = new Button("Hapus");
+
         btnAdd.setOnAction(v -> {
             listPharmas.add(tfName.getText());
         });
 
         btnRemove.setOnAction(v -> {
-            int index = listViewPharmas.getSelectionModel().getSelectionIndex();
-            listPharmas.add(tfName.getText());
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
         });
 
-        
-        rightSide.getChildren().addll(listViewPharmas, btnAdd, btnRemove);
+        // Tambah listView ke vbox
+        rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
+
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
-
-        ObservableList<ObatModel> listObat = FXCollection.observableArrayList();
+        // observable list
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
 
         // ambil data dari database
+        ObatDao obatDao = new ObatDao();
         try {
-            ObatDao obatDao = new ObatDao();
             listObat.addAll(obatDao.getAll());
         } catch (SQLException e) {
-
             e.printStackTrace();
         }
 
-        // membuat tabel view 
+        // Membuat Tabel View
         TableView<ObatModel> tableObat = new TableView<>();
-        TableColumn<ObatModel, String> colomn1 = new TableColumn<>("Nama");
-        TableColumn<ObatModel, String> colomn2 = new TableColumn<>("Tanggal Kadaluarsa");
-        TableColumn<ObatModel, Integer> colomn3 = new TableColumn<>("Stok");
 
-        // pasngkan
-        colomn1.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colomn2.setCellValueFactory(new PropertyValueFactory<>("exparedDate"));
-        colomn3.setCellValueFactory(new PropertyValueFactory<>("stock"));
+        // MembuAT Table Coloumn
+        TableColumn<ObatModel, String> coloumn1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> coloumn2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<ObatModel, Integer> coloumn3 = new TableColumn<>("Stok");
 
-        // tambah kolom ke table 
-        tableObat.getColumns().addAll(colomn1, colomn2, colomn3);
+        // Pasangkan
+        coloumn1.setCellValueFactory(new PropertyValueFactory<>("nama"));
+        coloumn2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        coloumn3.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        // kasi nilai
+        coloumn1.setPrefWidth((rightSide.getWidth() - 60) / 3);
+        coloumn2.setPrefWidth((rightSide.getWidth() - 60) / 3 + 10);
+        coloumn3.setPrefWidth((rightSide.getWidth() - 60) / 3);
+
+        // tambah colum ke table
+        tableObat.getColumns().addAll(coloumn1, coloumn2, coloumn3);
+
+        // Kasi nilai
         tableObat.setItems(listObat);
 
         TextField tfName = new TextField();
@@ -104,14 +123,11 @@ public class MainScene {
         Button btnAdd = new Button("Tambah");
         btnAdd.setOnAction(v -> {
             listObat.add(new ObatModel(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
-            obatDao.syncData(listObat)
+            obatDao.syncData(listObat);
         });
 
         // Tampilkan di VBOX
         rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
-
-        // tampilkan di VBox
-        rightSide.getChildren().add(tableObat);
 
     }
 
