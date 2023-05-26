@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javax.swing.text.html.ListView;
 
 public class MainScene {
     private Stage stage;
@@ -37,10 +38,81 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
+
+        // obsetvable list
+        ObservableList<String> listPharmas = FXCollection.observableArrayList();
+        listPharmas.addAll("iswari", "ronaldo", "dybala");
+        ListView<String> listViewPharmas = new ListView<>();
+
+        listViewPharmas.setItems(listPharmas);
+
+        TextField tfName = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Delete");
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tfName.getText());
+        });
+
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectionIndex();
+            listPharmas.add(tfName.getText());
+        });
+
+        
+        rightSide.getChildren().addll(listViewPharmas, btnAdd, btnRemove);
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
+
+        ObservableList<ObatModel> listObat = FXCollection.observableArrayList();
+
+        // ambil data dari database
+        try {
+            ObatDao obatDao = new ObatDao();
+            listObat.addAll(obatDao.getAll());
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+
+        // membuat tabel view 
+        TableView<ObatModel> tableObat = new TableView<>();
+        TableColumn<ObatModel, String> colomn1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> colomn2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<ObatModel, Integer> colomn3 = new TableColumn<>("Stok");
+
+        // pasngkan
+        colomn1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colomn2.setCellValueFactory(new PropertyValueFactory<>("exparedDate"));
+        colomn3.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        // tambah kolom ke table 
+        tableObat.getColumns().addAll(colomn1, colomn2, colomn3);
+
+        // kasi nilai
+        tableObat.setItems(listObat);
+
+        TextField tfName = new TextField();
+        tfName.setPromptText("Nama Obat");
+        TextField tfExpiredDate = new TextField();
+        tfExpiredDate.setPromptText("Tanggal Kadaluarsa");
+        TextField tfStock = new TextField();
+        tfStock.setPromptText("Stok");
+        HBox hbox = new HBox(tfName, tfExpiredDate, tfStock);
+
+        Button btnAdd = new Button("Tambah");
+        btnAdd.setOnAction(v -> {
+            listObat.add(new ObatModel(tfName.getText(), tfExpiredDate.getText(), Integer.parseInt(tfStock.getText())));
+            obatDao.syncData(listObat)
+        });
+
+        // Tampilkan di VBOX
+        rightSide.getChildren().addAll(tableObat, hbox, btnAdd);
+
+        // tampilkan di VBox
+        rightSide.getChildren().add(tableObat);
+
     }
 
     private void changeMenu(int indexMenu) {

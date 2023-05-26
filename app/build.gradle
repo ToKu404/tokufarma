@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.1'
 }
 
 java {
@@ -17,10 +18,15 @@ java {
 }
 
 javafx {
-    version = "20"
+    version = "17"
     modules = [ 'javafx.controls' ]
 }
 
 application {
     mainClass = 'tokufarma.App'
+}
+
+dependencies {
+compile group: 'org.xerial', name: 'sqlite-jdbc',
+version: '3.36.0.1'
 }
