@@ -1,6 +1,5 @@
 package tokufarma.Scenes;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -8,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -43,19 +45,20 @@ public class MainScene {
 
     private void showListView() {
         rightSide.getChildren().clear();
-        //Observable List
+
+        //observable list
         ObservableList<String> listPharmas = FXCollections.observableArrayList();
-        listPharmas.addAll("Afifah", "Salsabila", "Seril", "Freki");
+        listPharmas.addAll("Salsaaa", "Seril", "Dipsiy", "Arnii");
 
-
-        //menampilkan listview apoteker
+        //menampilkan list apoteker
         ListView<String> listViewPharmas = new ListView<>();
+
         //pasangkan
         listViewPharmas.setItems(listPharmas);
 
         TextField tfName = new TextField();
         Button btnAdd = new Button("Tambah");
-        Button btnRemove = new Button("Hapus");
+        Button btnRemove = new Button("Delete");
 
         btnAdd.setOnAction(v -> {
             listPharmas.add(tfName.getText());
@@ -66,14 +69,41 @@ public class MainScene {
             listPharmas.remove(index);
         });
 
-        //tambahkan listview ke vbox
+        //tambah listview ke vbox
         rightSide.getChildren().addAll(listViewPharmas, tfName, btnAdd, btnRemove);
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
 
+        //buat observable list
         ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+        listObat.add(new ObatModel("Paracetamol", "21-02-2023", 3));
+        listObat.add(new ObatModel("Kombatrin", "25-03-2023", 2));
+        listObat.add(new ObatModel("Antimo", "30-04-2023", 1));
+
+        //membuat tabel view
+        TableView<ObatModel> tableObat = new TableView<>();
+
+        //membuat table column
+        TableColumn<ObatModel, String> column1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> column2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<ObatModel, String> column3 = new TableColumn<>("Stock");
+
+        //pasangkan
+        column1.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("Expired Date"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("Stock"));
+
+        //tambahkan column ke table
+        tableObat.getColumns().addAll(column1, column2, column3);
+
+        //memberi nilai
+        tableObat.setItems(listObat);
+
+        //tampilkan di vbox
+        rightSide.getChildren().addAll(tableObat);
+
     }
 
     private void changeMenu(int indexMenu) {
