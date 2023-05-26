@@ -4,8 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -49,10 +51,26 @@ public class MainScene {
         listViewPharmas.setItems(listPharmas);
         rightSide.getChildren().add(listViewPharmas);
 
+        TextField tf = new TextField();
+        Button btnAdd = new Button("Tambah");
+        Button btnRemove = new Button("Remove");
+
+        btnAdd.setOnAction(v -> {
+            listPharmas.add(tf.getText());
+        });
+
+        btnRemove.setOnAction(v -> {
+            int index = listViewPharmas.getSelectionModel().getSelectedIndex();
+            listPharmas.remove(index);
+        });
+
+        rightSide.getChildren().addAll(listViewPharmas, btnAdd, btnRemove);
+
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
     }
 
     private void changeMenu(int indexMenu) {
