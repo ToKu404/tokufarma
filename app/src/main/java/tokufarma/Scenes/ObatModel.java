@@ -1,16 +1,10 @@
 package tokufarma.Scenes;
 
 public class ObatModel {
-    private String name ;
-    private String expiredDate ;
-    private int stock ;
+    private String name;
+    private String expiredDate;
+    private int stock;
     
-    public ObatModel(String name, String expiredDate, int stock) {
-        this.name = name;
-        this.expiredDate = expiredDate;
-        this.stock = stock;
-    }
-
     public String getName() {
         return name;
     }
@@ -35,7 +29,9 @@ public class ObatModel {
         this.stock = stock;
     }
 
-   
-
-
+    public ObatModel(String name, String expiredDate, int stock) {
+        this.name = name;
+        this.expiredDate = expiredDate;
+        this.stock = stock;
+    }
 }
