@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import tokufarma.model.ObatModel;
 
 public class MainScene {
     private Stage stage;
@@ -71,6 +72,8 @@ public class MainScene {
 
     private void showTableView() {
         rightSide.getChildren().clear();
+
+        ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
     }
 
     private void changeMenu(int indexMenu) {
