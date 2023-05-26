@@ -7,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -64,13 +67,33 @@ public class MainScene {
             listPharmas.remove(index);
         });
 
-        rightSide.getChildren().addAll(listViewPharmas, btnAdd, btnRemove);
+        // rightSide.getChildren().addAll(listViewPharmas, btnAdd, btnRemove);
 
     }
 
     private void showTableView() {
         rightSide.getChildren().clear();
         ObservableList<ObatModel> listObat = FXCollections.observableArrayList();
+        listObat.add(new ObatModel("paracetamol", "21-02-2023", 3));
+        listObat.add(new ObatModel("kombatrin", "22-02-2023", 1));
+        listObat.add(new ObatModel("ibuprofen", "24-02-2023", 2));
+
+        // membuat tabel view
+        TableView<ObatModel> tableObat = new TableView<>();
+        TableColumn<ObatModel, String> column1 = new TableColumn<>("Nama");
+        TableColumn<ObatModel, String> column2 = new TableColumn<>("Tanggal Kadaluarsa");
+        TableColumn<ObatModel, String> column3 = new TableColumn<>("stok");
+
+        // pasangkan
+        column1.setCellValueFactory(new PropertyValueFactory<>("name"));
+        column2.setCellValueFactory(new PropertyValueFactory<>("expiredDate"));
+        column3.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+        // tambah column ke table
+        tableObat.getColumns().addAll(column1, column2, column3);
+
+        // tambah nilai
+        tableObat.setItems(listObat);
     }
 
     private void changeMenu(int indexMenu) {
